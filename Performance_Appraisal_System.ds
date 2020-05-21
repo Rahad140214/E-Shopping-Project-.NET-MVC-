@@ -1,0 +1,1050 @@
+/*
+ * Author       : kazi_hassan
+ * Generated on : 21-May-2020 02:49:10
+ * Version      : 1.0
+ */
+ application "Performance Appraisal System"
+ {
+ 	date format = "dd-MMM-yyyy"
+ 	time zone = "Australia/Sydney"
+ 	time format = "24-hr"
+	section Application_Users
+	{
+		displayname= "Application Users"
+		icon = "users-2-woman"
+		form Application_Users
+		{
+			displayname = "Application Users"
+			success message = "Application User Added Successfully"
+			field alignment = left
+			Section
+			(
+				type = section
+	 			row = 1
+	 			column = 0   
+				width = medium
+			)
+			must have Name
+			(
+    			type = name
+     			prefix
+     			(
+	     			 type = prefix
+	     			 displayname ="Prefix"
+	     			 visibility = false
+	     			 value = {"Mr.","Mrs.","Ms."}
+     			) 
+     			first_name
+     			(
+	     			 type = first_name
+	     			 displayname ="First Name"
+     			) 
+     			last_name
+     			(
+	     			 type = last_name
+	     			 displayname ="Last Name"
+     			) 
+     			suffix
+     			(
+	     			 type = suffix
+	     			 displayname ="Suffix"
+	     			 visibility = false
+     			) 
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			must have User_Type
+			(
+				type = picklist
+				displayname = "User Type"
+				values = {"Admin", "Developers", "Quality Assurances", "Supports", "Team Leaders", "Technical Analyst ", "HR"}
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have unique Email
+			(
+    			type = email
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			must have unique Phone_Number
+			(
+    			type = phonenumber
+				displayname = "Phone"
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			Address
+			(
+    			type = address
+     			capture_coordinates = true
+     			adjust_using_map = false
+     			address_line_1
+     			(
+	     			  type = address_line_1
+	     			  displayname = "Address Line 1"
+     			) 
+     			address_line_2
+     			(
+	     			  type = address_line_2
+	     			  displayname = "Address Line 2"
+	     			 visibility = false
+     			) 
+     			district_city
+     			(
+	     			  type = district_city
+	     			  displayname = "City / District"
+     			) 
+     			state_province
+     			(
+	     			  type = state_province
+	     			  displayname = "State / Province"
+     			) 
+     			postal_Code
+     			(
+	     			  type = postal_Code
+	     			  displayname = "Postal Code"
+     			) 
+     			country
+     			(
+	     			  type = country
+	     			  displayname = "Country"
+     			) 
+     			latitude
+     			(
+	     			  type = latitude
+	     			  displayname = "latitude"
+	     			 visibility = false
+     			) 
+     			longitude
+     			(
+	     			  type = longitude
+	     			  displayname = "longitude"
+	     			 visibility = false
+     			) 
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			Report_To
+			(
+				type = picklist
+				displayname = "Report To"
+				values  = Application_Users[User_Type == "Team Leaders"].ID
+    			displayformat = [" " + Name.first_name + " " + Name.last_name]
+				sortorder = ascending
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+	
+			customize
+			(
+				icon = "users-2-woman"
+			)
+			actions
+			{
+				on add
+				{
+					submit
+					(
+   						type = submit
+   						displayname = "Submit"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		}
+		default list All_Application_Users
+		{
+			displayName = "All Application Users"
+			show all rows from Application_Users    
+			(
+				Name 
+	 			(
+	      			displayformat = [first_name+""+prefix+""+last_name+""+suffix]
+	 			)
+				Email
+				Phone_Number as "Phone"
+				User_Type as "User Type"
+				Address 
+	 			(
+	      			displayformat = [address_line_1+""+address_line_2+""+district_city+""+state_province+""+postal_Code+""+country]
+	      			enable = Link_to_Map,Show_As_Text
+	 			)
+			)
+			options
+			(
+				icon = "users-2-woman"
+	 		)
+			quickview
+			(
+				layout
+				(
+		 			type = -1
+					datablock1
+					(
+			 			layout type = -1
+		     			title = "Overview"
+						fields
+						(
+							Name
+							Email
+							Phone_Number as "Phone"
+							User_Type as "User Type"
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    	 			)
+							record
+							(
+								Edit   	   
+    						)
+    			)
+    			action
+    			(
+							on click
+							(
+								View Record   	   
+    						)
+							on right click
+							(
+								Edit   	   
+								View Record   	   
+    						)
+     			)
+			)
+			detailview
+			(
+				layout
+				(
+		 			type = 2
+					datablock2
+					(
+			 			layout type = -2
+		     			title = "User"
+						fields
+						(
+							Name
+							User_Type as "User Type"
+							Email
+							Phone_Number as "Phone"
+							Address
+						)
+					)
+					datablock3
+					(
+			 			layout type = -2
+		     			title = "Report To"
+		     			related field =  Report_To
+						fields
+						(
+							Name
+							User_Type as "User Type"
+							Email
+							Phone_Number as "Phone"
+							Address
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    	 			)
+    			)
+			)
+		}
+	}
+	section Weeks
+	{
+		icon = "business-progress"
+		form PA_Week
+		{
+			displayname = "PA Week"
+			success message = "Pa Week Added Successfully"
+			field alignment = left
+			Section
+			(
+				type = section
+	 			row = 1
+	 			column = 0   
+				width = medium
+			)
+			must have Name
+			(
+    			type = text
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have From_Date
+			(
+    			type = date
+				displayname = "From Date"
+				alloweddays = 0,1,2,3,4,5,6
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have To_Date
+			(
+    			type = date
+				displayname = "To Date"
+				alloweddays = 0,1,2,3,4,5,6
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+	
+			customize
+			(
+				icon = "business-progress"
+			)
+			actions
+			{
+				on add
+				{
+					submit
+					(
+   						type = submit
+   						displayname = "Submit"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		}
+		default list All_Pa_Weeks
+		{
+			displayName = "All Pa Weeks"
+			show all rows from PA_Week    
+			(
+				Name
+				From_Date as "From Date"
+				To_Date as "To Date"
+			)
+			options
+			(
+				icon = "design-bullet-list-67"
+	 		)
+			quickview
+			(
+				layout
+				(
+		 			type = -1
+					datablock1
+					(
+			 			layout type = -1
+		     			title = "Overview"
+						fields
+						(
+							Name
+							From_Date as "From Date"
+							To_Date as "To Date"
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    	 			)
+							record
+							(
+								Edit   	   
+    						)
+    			)
+    			action
+    			(
+							on click
+							(
+								View Record   	   
+    						)
+							on right click
+							(
+								Edit   	   
+								View Record   	   
+    						)
+     			)
+			)
+			detailview
+			(
+				layout
+				(
+		 			type = 1
+					datablock1
+					(
+			 			layout type = -2
+		     			title = "Overview"
+						fields
+						(
+							Name
+							From_Date as "From Date"
+							To_Date as "To Date"
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    	 			)
+    			)
+			)
+		}
+	}
+	section Marks
+	{
+		icon = "education-agenda-bookmark"
+		form PA_Marks
+		{
+			displayname = "PA Marks"
+			success message = "Pa Mark Added Successfully"
+			field alignment = left
+			Section
+			(
+				type = section
+	 			row = 1
+	 			column = 0   
+				width = medium
+			)
+			must have User
+			(
+				type = picklist
+				values  = Application_Users.ID
+    			displayformat = [" " + Name.first_name + " " + Name.last_name]
+				sortorder = ascending
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have PA_Week
+			(
+				type = picklist
+				displayname = "PA Week"
+				values  = PA_Week.ID
+    			displayformat = [Name + "-" + From_Date + "---" + To_Date]
+				sortorder = ascending
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			PA_Mark_Details
+			(
+				type = grid
+				displayname = "PA Mark Details"
+	    
+				must have Rating
+				(
+					type = picklist
+					values = {"1", "2", "3", "4", "5"}
+					others option = true
+					width = medium
+				)
+				must have Comment
+				(
+    				type = textarea
+					displayname = "Comments"
+					height = 100px
+					width = medium
+				)
+	 			row = 2
+	 			column = 1   
+				width = medium
+			)
+			Section1
+			(
+				type = section
+				displayname = "Section"
+	 			row = 3
+	 			column = 0   
+				width = medium
+			)
+			must have Avarage
+			(
+				type = decimal
+				displayname = "Average Mark"
+	 			row = 3
+	 			column = 1   
+				width = medium
+			)
+	
+			customize
+			(
+				icon = "education-agenda-bookmark"
+			)
+			actions
+			{
+				on add
+				{
+					submit
+					(
+   						type = submit
+   						displayname = "Submit"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		}
+		default list All_Pa_Marks
+		{
+			displayName = "All Pa Marks"
+			show all rows from PA_Marks    
+			(
+				User
+				PA_Week as "PA Week"
+				Avarage as "Average Mark"
+			)
+			options
+			(
+				icon = "health-notebook"
+	 		)
+			quickview
+			(
+				layout
+				(
+		 			type = -1
+					datablock1
+					(
+			 			layout type = -1
+		     			title = "Overview"
+						fields
+						(
+							User
+							PA_Week as "PA Week"
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    	 			)
+							record
+							(
+								Edit   	   
+    						)
+    			)
+    			action
+    			(
+							on click
+							(
+								View Record   	   
+    						)
+							on right click
+							(
+								Edit   	   
+								View Record   	   
+    						)
+     			)
+			)
+			detailview
+			(
+				layout
+				(
+		 			type = 2
+					datablock2
+					(
+			 			layout type = -2
+		     			title = "User"
+		     			related field =  User
+						fields
+						(
+							Name
+							User_Type as "User Type"
+							Email
+							Phone_Number as "Phone"
+							Address
+						)
+					)
+					datablock3
+					(
+			 			layout type = -2
+		     			title = "Week"
+		     			related field =  PA_Week
+						fields
+						(
+							Name
+							From_Date as "From Date"
+							To_Date as "To Date"
+						)
+					)
+					datablock4
+					(
+			 			layout type = -1
+		     			title = "Mark Details"
+		     			related field =  PA_Mark_Details
+						fields
+						(
+							Rating
+							Comment as "Comments"
+						)
+					)
+					datablock5
+					(
+			 			layout type = -2
+		     			title = "Extra"
+						fields
+						(
+							Avarage as "Average Mark"
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    	 			)
+    			)
+			)
+		}
+	}
+
+
+
+	workflow
+	{
+		form
+		{
+			Application_users_edit_pe as "Application users edit permission Check."
+			{
+				type =  form
+				form = Application_Users
+				on edit
+				{
+					actions 
+					{
+					on validate
+					(
+						permissionAdminUser = Application_Users[Email == zoho.adminuserid];
+										if(permissionAdminUser.count(Email) > 0)
+										{
+											if(permissionAdminUser.User_Type.toUpperCase().replaceAll(" ","") != "Admin".toUpperCase().replaceAll(" ","") || permissionAdminUser.User_Type.toUpperCase().replaceAll(" ","") != "Admin".toUpperCase().replaceAll(" ",""))
+											{
+												alert "Unauthorize access.";
+												cancel submit;
+											}
+										}
+										else
+										{
+											permissionUser = Application_Users[Email == zoho.loginuserid];
+											if(permissionUser.count(Email) > 0)
+											{
+												if(permissionUser.User_Type.toUpperCase().replaceAll(" ","") != "Admin".toUpperCase().replaceAll(" ","") || permissionUser.User_Type.toUpperCase().replaceAll(" ","") != "Admin".toUpperCase().replaceAll(" ",""))
+												{
+													alert "Unauthorize access.";
+													cancel submit;
+												}
+											}
+											else
+											{
+												alert "Unauthorize access.";
+												cancel submit;
+											}
+										}
+					)
+					}
+				}
+			}
+			PA_Week_Add_Validation as "PA Week Add Validation"
+			{
+				type =  form
+				form = PA_Week
+				on add
+				{
+					actions 
+					{
+					on validate
+					(
+						if(PA_Week[From_Date <= input.From_Date && To_Date >= input.To_Date].count(ID) > 0)
+										{
+											alert " Given Input date range already exists.";
+											cancel submit;
+										}
+										if(PA_Week[From_Date >= input.From_Date && To_Date <= input.To_Date].count(ID) > 0)
+										{
+											alert " Given From Date already exists in previous Weeks.";
+											cancel submit;
+										}
+										if(PA_Week[From_Date <= input.From_Date && To_Date >= input.From_Date && To_Date <= input.To_Date].count(ID) > 0)
+										{
+											alert "Invalid Date Format";
+											cancel submit;
+										}
+					)
+					}
+				}
+			}
+			Set_average_mark_field_re as "Set average mark field read only."
+			{
+				type =  form
+				form = PA_Marks
+				on add or edit
+				{
+					actions 
+					{
+						disable Avarage;
+					}
+				}
+			}
+			Load_average_mark_on_rati as "Load average mark on rating change."
+			{
+				type =  form
+				form = PA_Marks
+				on add or edit
+				{
+					actions 
+					{
+					on user input of PA_Mark_Details.Rating
+					(
+						input.Avarage = 0.0;
+										totalRating = 0.0;
+										tempTotal = 0.0;
+										rowCount = 0;
+										for each  perRow in PA_Mark_Details
+										{
+											eachRating = perRow.Rating;
+											if(!eachRating.isEmpty())
+											{
+												if(eachRating.toDecimal() <= 5)
+												{
+													tempTotal = tempTotal + eachRating.toDecimal();
+													rowCount = rowCount + 1;
+												}
+												else
+												{
+													alert "Must be equal or less than 5.";
+													perRow.Rating="0";
+												}
+											}
+										}
+										totalRating = tempTotal;
+										if(totalRating > 0)
+										{
+											input.Avarage = (input.Avarage + totalRating) / rowCount;
+										}
+					)
+					}
+				}
+			}
+			PA_mark_edit_permission_ as "PA mark edit permission."
+			{
+				type =  form
+				form = PA_Marks
+				on edit
+				{
+					actions 
+					{
+					on validate
+					(
+						permissionAdminUser = Application_Users[Email == zoho.adminuserid];
+										if(permissionAdminUser.count(Email) > 0)
+										{
+											if(permissionAdminUser.User_Type.toUpperCase().replaceAll(" ","") != "Team Leaders".toUpperCase().replaceAll(" ","") || permissionAdminUser.User_Type.toUpperCase().replaceAll(" ","") != "Team Leaders".toUpperCase().replaceAll(" ",""))
+											{
+												alert "Unauthorize access.";
+												cancel submit;
+											}
+										}
+										else
+										{
+											permissionUser = Application_Users[Email == zoho.loginuserid];
+											if(permissionUser.count(Email) > 0)
+											{
+												if(permissionUser.User_Type.toUpperCase().replaceAll(" ","") != "Team Leaders".toUpperCase().replaceAll(" ","") || permissionUser.User_Type.toUpperCase().replaceAll(" ","") != "Team Leaders".toUpperCase().replaceAll(" ",""))
+												{
+													alert "Unauthorize access.";
+													cancel submit;
+												}
+											}
+											else
+											{
+												alert "Unauthorize access.";
+												cancel submit;
+											}
+										}
+					)
+					}
+				}
+			}
+			Add_application_user_vali as "Add application user validation."
+			{
+				type =  form
+				form = Application_Users
+				on add
+				{
+					actions 
+					{
+					on validate
+					(
+						if(input.User_Type.toUpperCase().replaceAll(" ","") != "Team Leaders".toUpperCase().replaceAll(" ",""))
+										{
+											if(input.Report_To == null || input.Report_To == 0)
+											{
+												alert "Report to is required.";
+												cancel submit;
+											}
+										}
+					)
+					}
+				}
+			}
+			Edit_application_user_val as "Edit application user validation."
+			{
+				type =  form
+				form = Application_Users
+				on edit
+				{
+					actions  (User_Type != "Team Leaders")
+					{
+					on validate
+					(
+						if(Report_To == null || Report_To == 0)
+										{
+											alert "Report to is required.";
+											cancel submit;
+										}
+					)
+					}
+				}
+			}
+			Event_on_user_type_change as "Event on user type change."
+			{
+				type =  form
+				form = Application_Users
+				on add or edit
+				{
+					actions  (User_Type != "Team Leaders")
+					{
+					on user input of User_Type
+					(
+						enable Report_To;
+					)
+					}
+					actions  (User_Type == "Team Leaders")
+					{
+					on user input of User_Type
+					(
+						disable Report_To;
+					)
+					}
+				}
+			}
+			Application_user_disable_ as "Application user disable report to."
+			{
+				type =  form
+				form = Application_Users
+				on add
+				{
+					actions 
+					{
+						disable Report_To;
+					}
+				}
+			}
+			Total_mark_calculate_for_ as "Total mark calculate for on remove a row for add."
+			{
+				type =  form
+				form = PA_Marks
+				on add
+				{
+					actions 
+					{
+					on delete row of PA_Mark_Details
+					(
+						input.Avarage = 0.0;
+										tempTotal = 0.0;
+										rowCount = 0;
+										for each  perRow in PA_Mark_Details
+										{
+											if(row.Rating == perRow.Rating && row.Comment == perRow.Comment)
+											{
+											}
+											else
+											{
+												eachRating = perRow.Rating;
+												tempTotal = tempTotal + eachRating.toDecimal();
+												rowCount = rowCount + 1;
+											}
+										}
+										totalRating = tempTotal;
+										if(totalRating > 0)
+										{
+											input.Avarage = (input.Avarage + totalRating) / rowCount;
+										}
+										else
+										{
+											input.Avarage = 0;
+										}
+					)
+					}
+				}
+			}
+			Total_mark_calculate_on_d as "Total mark calculate on delete for edit a row."
+			{
+				type =  form
+				form = PA_Marks
+				on edit
+				{
+					actions 
+					{
+					on delete row of PA_Mark_Details
+					(
+						input.Avarage = 0.0;
+										tempTotal = 0.0;
+										rowCount = 0;
+										for each  perRow in PA_Mark_Details
+										{
+											if(row.ID != null && perRow.ID != null && row.ID == perRow.ID)
+											{
+											}
+											else
+											{
+												eachRating = perRow.Rating;
+												tempTotal = tempTotal + eachRating.toDecimal();
+												rowCount = rowCount + 1;
+											}
+										}
+										totalRating = tempTotal;
+										if(totalRating > 0)
+										{
+											input.Avarage = (input.Avarage + totalRating) / rowCount;
+										}
+										else
+										{
+											input.Avarage = 0;
+										}
+					)
+					}
+				}
+			}
+		}
+	}
+	share_settings
+	{
+			"Read"
+			{
+				name = "Read"
+				type = Users_Permissions
+				permissions = {Chat:true, Predefined:true}
+				description = "This profile will have read permission for all components\n"
+			}
+			"Write"
+			{
+				name = "Write"
+				type = Users_Permissions
+				permissions = {Chat:true, Predefined:true}
+				description = "This profile will have write permission for all components\n"
+			}
+			"Developer"
+			{
+				name = "Developer"
+				type = Developer
+				permissions = {Chat:false, Predefined:true}
+				description = "Developer\n"
+			}
+			"Administrator"
+			{
+				name = "Administrator"
+				type = Users_Permissions
+				permissions = {Chat:true, Predefined:true}
+				description = "This profile will have all the permissions.\n"
+			}
+			roles
+			{
+				"CEO"
+				{
+					description = "User belonging to this role can access data of all other users."
+				}
+			}
+	}
+
+	customize
+	{
+		
+		layout = "tab"
+		color = "black"
+		base theme = "professional"
+		new theme = 1
+		
+		icons = true
+		icons style = outline
+	}
+
+	
+}
